@@ -1,0 +1,24 @@
+[
+  {
+    "name": "splunk",
+    "image": "splunk/splunk:latest",
+    "portMappings": [
+      {
+        "containerPort": 8000,
+        "hostPort": 8000,
+        "protocol": "tcp"
+      }
+    ],
+    "environment": [
+      {
+        "name": "SPLUNK_START_ARGS",
+        "value": "--accept-license"
+      },
+      {
+        "name": "SPLUNK_PASSWORD",
+        "value": "password"
+      }
+    ],
+    "essential": true
+  }
+]
