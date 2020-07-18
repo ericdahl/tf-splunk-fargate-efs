@@ -45,6 +45,17 @@ resource "aws_security_group_rule" "splunk_ingress_80" {
   cidr_blocks = [var.admin_cidr]
 }
 
+resource "aws_security_group_rule" "splunk_ingress_8000" {
+  security_group_id = aws_security_group.splunk.id
+
+  type      = "ingress"
+  protocol  = "tcp"
+  from_port = 8000
+  to_port   = 8000
+
+  cidr_blocks = [var.admin_cidr]
+}
+
 resource "aws_ecs_service" "splunk" {
 
   name            = "splunk"
