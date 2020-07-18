@@ -1,7 +1,7 @@
 [
   {
     "name": "splunk",
-    "image": "669361545709.dkr.ecr.us-east-1.amazonaws.com/docker-efs:latest",
+    "image": "ericdahl/splunk-efs:d5972a7",
     "portMappings": [
       {
         "containerPort": 8000,
