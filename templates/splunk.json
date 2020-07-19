@@ -22,7 +22,7 @@
     "mountpoints": [
       {
         "sourceVolume": "opt-splunk",
-        "containerPath": "/opt/splunk"
+        "containerPath": "/opt/"
       }
     ],
     "command": ["python", "-m", "SimpleHTTPServer", "8000"]
