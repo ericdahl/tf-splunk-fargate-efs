@@ -30,7 +30,14 @@ RUN sudo dnf install -y /tmp/nfs-utils/*.rpm /tmp/amazon-efs-utils.rpm
 # not sure why this symlink was lost
 RUN sudo ln -s /usr/bin/python2 /usr/bin/python
 
+# enable HTTP Event Collector (HEC)
+ADD etc/apps/splunk_httpinput/local/inputs.conf /opt/splunk/etc/apps/splunk_httpinput/local/inputs.conf
 
+# Add "webapp" index
+ADD etc/apps/search/local/indexes.conf /opt/splunk/etc/apps/search/local/indexes.conf
+
+# Add HEC token for "webapp" index
+ADD etc/apps/search/local/inputs.conf /opt/splunk/etc/apps/search/local/inputs.conf
 
 WORKDIR /
 

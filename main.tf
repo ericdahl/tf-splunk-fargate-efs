@@ -124,8 +124,6 @@ resource "aws_efs_mount_target" "splunk" {
 
   security_groups = [
     aws_security_group.splunk_efs.id,
-    module.vpc.sg_allow_vpc,  # not needed?
-    module.vpc.sg_allow_egress  # not needed?
   ]
 }
 
