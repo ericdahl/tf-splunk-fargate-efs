@@ -7,6 +7,11 @@
         "containerPort": 8000,
         "hostPort": 8000,
         "protocol": "tcp"
+      },
+      {
+        "containerPort": 8088,
+        "hostPort": 8088,
+        "protocol": "tcp"
       }
     ],
     "environment": [
