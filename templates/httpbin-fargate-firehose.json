@@ -1,0 +1,50 @@
+[
+  {
+    "name": "httpbin",
+    "image": "ericdahl/httpbin:e249975",
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "protocol": "tcp"
+      }
+    ],
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awsfirelens",
+      "options": {
+        "Name": "firehose",
+        "region": "us-east-1",
+        "delivery_stream": "httpbin-fargate-firelens-app"
+      }
+    }
+  },
+  {
+    "name": "redis",
+    "image": "redis",
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awsfirelens",
+      "options": {
+        "Name": "firehose",
+        "region": "us-east-1",
+        "delivery_stream": "httpbin-fargate-firelens-app"
+      }
+    }
+  },
+  {
+    "name": "firelens",
+    "image": "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:latest",
+    "firelensConfiguration": {
+      "type": "fluentbit"
+    },
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/httpbin-fargate-firelens-firehose",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "firelens"
+      }
+    }
+  }
+]
