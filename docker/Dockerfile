@@ -1,3 +1,4 @@
+# used to build the EFS RPMs and dependencies
 FROM centos:8 AS builder
 
 RUN yum update -y
@@ -18,14 +19,15 @@ RUN dnf --downloadonly --downloaddir=/tmp/nfs-utils install -y nfs-utils
 FROM splunk/splunk:latest
 
 COPY --from=builder  /tmp/amazon-efs-utils.rpm /tmp/amazon-efs-utils.rpm
-WORKDIR /tmp
+COPY --from=builder  /tmp/nfs-utils/ /tmp/nfs-utils/
+
+# microdnf can't install RPMs directly
 RUN sudo microdnf install -y dnf
 
-COPY --from=builder  /tmp/nfs-utils/ /tmp/nfs-utils/
-RUN sudo dnf install -y ./nfs-utils/*.rpm # nfs-utils-2.3.3-31.el8.x86_64.rpm
+# install EFS utils and dependencies
+RUN sudo dnf install -y /tmp/nfs-utils/*.rpm /tmp/amazon-efs-utils.rpm
 
-RUN sudo dnf install -y ./amazon-efs-utils.rpm
-
+# not sure why this symlink was lost
 RUN sudo ln -s /usr/bin/python2 /usr/bin/python
 
 
