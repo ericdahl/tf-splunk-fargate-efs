@@ -4,6 +4,12 @@ Demo app of Splunk running on AWS ECS Fargate with EFS for storage
 
 ## TODO
 
+- populate /opt/splunk somehow
+-- env var to set data dir?
+-- or.. copy contents into EFS fs..?
+-- https://splunk.github.io/docker-splunk/STORAGE_OPTIONS.html
+--- /opt/splunk/var
+
 - Debug 
 
 ```
