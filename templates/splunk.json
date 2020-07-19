@@ -1,7 +1,7 @@
 [
   {
     "name": "splunk",
-    "image": "amazonlinux:2",
+    "image": "ericdahl/splunk-efs:d5972a7",
     "portMappings": [
       {
         "containerPort": 8000,
@@ -25,6 +25,13 @@
         "containerPath": "/opt/"
       }
     ],
-    "command": ["python", "-m", "SimpleHTTPServer", "8000"]
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "tf_splunk_fargate_efs",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "splunk"
+      }
+    }
   }
 ]

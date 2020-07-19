@@ -108,7 +108,7 @@ resource "aws_security_group_rule" "splunk_efs_ingress_2049_splunk" {
   from_port                = 2049
   to_port                  = 2049
   source_security_group_id = aws_security_group.splunk.id
-  description              = "Allows Splunk SG to connec to EFS"
+  description              = "Allows Splunk SG to connect to EFS"
 }
 
 resource "aws_efs_file_system" "splunk" {
@@ -154,7 +154,6 @@ EOF
 
 resource "aws_iam_policy" "splunk_execution_role" {
   name = "splunk-execution-role"
-  //  role = aws_iam_role.splunk_execution_role.id
 
   policy =<<EOF
 {
@@ -188,7 +187,6 @@ data "aws_ssm_parameter" "ecs_optimized" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
 }
 
-
 resource "aws_key_pair" "ecd" {
   public_key = var.public_key
 }
@@ -213,4 +211,8 @@ output "efs" {
 
 output "default" {
   value = aws_instance.default.public_ip
+}
+
+resource "aws_cloudwatch_log_group" "splunk" {
+  name = "tf_splunk_fargate_efs"
 }
