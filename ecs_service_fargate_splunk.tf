@@ -60,50 +60,50 @@ resource "aws_security_group_rule" "splunk_ingress_8000_hec" {
 
   cidr_blocks = [var.admin_cidr]
 }
-//
-//resource "aws_ecs_service" "splunk" {
-//
-//  name            = "splunk"
-//  cluster         = aws_ecs_cluster.cluster.name
-//  task_definition = aws_ecs_task_definition.splunk.arn
-//  desired_count   = 1
-//  launch_type     = "FARGATE"
-//
-//  platform_version = "1.4.0"
-//
-//  network_configuration {
-//    security_groups = [
-//      aws_security_group.splunk.id,
-//      module.vpc.sg_allow_egress,
-//      module.vpc.sg_allow_vpc,
-//    ]
-//
-//    subnets          = [module.vpc.subnet_public1]
-//    assign_public_ip = true
-//  }
-//
-//  load_balancer {
-//    container_name = "splunk"
-//    container_port = 8088
-//
-//    target_group_arn = aws_lb_target_group.splunk_alb_hec.arn
-//  }
-//
-//  load_balancer {
-//    container_name = "splunk"
-//    container_port = 8000
-//
-//    target_group_arn = aws_lb_target_group.splunk_alb_console.arn
-//  }
-//
-//
-//  deployment_minimum_healthy_percent = 0
-//  health_check_grace_period_seconds = 180
-//
-//
-//  # Service will fail to be created if the ALB isn't there yet
-//  depends_on = [aws_lb.splunk_alb]
-//}
+
+resource "aws_ecs_service" "splunk" {
+
+  name            = "splunk"
+  cluster         = aws_ecs_cluster.cluster.name
+  task_definition = aws_ecs_task_definition.splunk.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  platform_version = "1.4.0"
+
+  network_configuration {
+    security_groups = [
+      aws_security_group.splunk.id,
+      module.vpc.sg_allow_egress,
+      module.vpc.sg_allow_vpc,
+    ]
+
+    subnets          = [module.vpc.subnet_public1]
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    container_name = "splunk"
+    container_port = 8088
+
+    target_group_arn = aws_lb_target_group.splunk_alb_hec.arn
+  }
+
+  load_balancer {
+    container_name = "splunk"
+    container_port = 8000
+
+    target_group_arn = aws_lb_target_group.splunk_alb_console.arn
+  }
+
+
+  deployment_minimum_healthy_percent = 0
+  health_check_grace_period_seconds = 180
+
+
+  # Service will fail to be created if the ALB isn't there yet
+  depends_on = [aws_lb.splunk_alb]
+}
 
 resource "aws_cloudwatch_log_group" "splunk" {
   name = "tf_splunk_fargate_efs"
@@ -113,6 +113,17 @@ resource "aws_security_group" "splunk_alb" {
   vpc_id = module.vpc.vpc_id
 
   name = "splunk-alb"
+}
+
+resource "aws_security_group_rule" "splunk_alb_ingress_443_admin" {
+
+  security_group_id = aws_security_group.splunk_alb.id
+
+  type        = "ingress"
+  protocol    = "tcp"
+  from_port   = 443
+  to_port     = 443
+  cidr_blocks = [var.admin_cidr]
 }
 
 resource "aws_security_group_rule" "splunk_alb_ingress_8088_admin" {
@@ -181,46 +192,53 @@ resource "aws_route53_record" "acm_validation" {
   ]
 }
 
-//resource "aws_lb_listener" "splunk_console" {
-//  load_balancer_arn = aws_lb.splunk_alb.arn
-//  port = 443
-//  protocol          = "HTTPS"
-//  ssl_policy        = "ELBSecurityPolicy-2016-08"
-//  default_action {
-//    type = "forward"
-//    target_group_arn = aws_lb_target_group.splunk_alb_console.arn
-//  }
-//
-//  certificate_arn = aws_acm_certificate.cert.arn
-//
-//  depends_on = [
-//  aws_route53_record.acm_validation
-//  ]
-//}
-//
-//resource "aws_lb_listener" "splunk_hec" {
-//  load_balancer_arn = aws_lb.splunk_alb.arn
-//  port = 8088
-//  protocol          = "HTTPS"
-//  ssl_policy        = "ELBSecurityPolicy-2016-08"
-//  default_action {
-//    type = "forward"
-//    target_group_arn = aws_lb_target_group.splunk_alb_hec.arn
-//  }
-//
-//  certificate_arn = aws_acm_certificate.cert.arn
-//
-//  depends_on = [
-//    aws_route53_record.acm_validation
-//  ]
-//}
+resource "aws_lb_listener" "splunk_console" {
+  load_balancer_arn = aws_lb.splunk_alb.arn
+  port = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  default_action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.splunk_alb_console.arn
+  }
+
+  certificate_arn = aws_acm_certificate.splunk.arn
+
+  depends_on = [
+  aws_route53_record.acm_validation
+  ]
+}
+
+resource "aws_lb_listener" "splunk_hec" {
+  load_balancer_arn = aws_lb.splunk_alb.arn
+  port = 8088
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  default_action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.splunk_alb_hec.arn
+  }
+
+  certificate_arn = aws_acm_certificate.splunk.arn
+
+  depends_on = [
+    aws_route53_record.acm_validation
+  ]
+}
 
 resource "aws_lb_target_group" "splunk_alb_hec" {
   vpc_id = module.vpc.vpc_id
   name        = "splunk-tg-hec"
   port        = 8088
-  protocol    = "HTTP" # TODO: HTTPS?
+  protocol    = "HTTPS" # TODO: HTTPS?
   target_type = "ip"
+
+  deregistration_delay = 3
+
+  health_check {
+    protocol = "HTTPS"
+    path = "/services/collector/health"
+  }
 
 }
 
@@ -230,6 +248,13 @@ resource "aws_lb_target_group" "splunk_alb_console" {
   port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
+
+  deregistration_delay = 3
+
+
+  health_check {
+    matcher = "200-399"
+  }
 }
 
 
