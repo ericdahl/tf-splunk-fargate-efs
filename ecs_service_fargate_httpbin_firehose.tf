@@ -18,7 +18,7 @@ resource "aws_ecs_task_definition" "httpbin_fargate_firehose" {
   cpu          = 256
   memory       = 512
 
-  task_role_arn = aws_iam_role.task_httpbin_fargate_firehose[0].arn
+  task_role_arn = aws_iam_role.task_httpbin_fargate_firehose.arn
 }
 
 resource "aws_iam_role" "task_httpbin_fargate_firehose" {
@@ -69,8 +69,8 @@ EOF
 resource "aws_iam_role_policy_attachment" "task_httpbin_fargate_firehose" {
   count = var.enable_fargate_httpbin_firehose ? 1 : 0
 
-  role       = aws_iam_role.task_httpbin_fargate_firehose[0].name
-  policy_arn = aws_iam_policy.task_httpbin_fargate_firehose[0].arn
+  role       = aws_iam_role.task_httpbin_fargate_firehose.name
+  policy_arn = aws_iam_policy.task_httpbin_fargate_firehose.arn
 }
 
 resource "aws_ecs_service" "httpbin_fargate_firehose" {
@@ -78,7 +78,7 @@ resource "aws_ecs_service" "httpbin_fargate_firehose" {
 
   name            = "httpbin-fargate-firehose"
   cluster         = aws_ecs_cluster.cluster.name
-  task_definition = aws_ecs_task_definition.httpbin_fargate_firehose[0].arn
+  task_definition = aws_ecs_task_definition.httpbin_fargate_firehose.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
@@ -97,7 +97,7 @@ resource "aws_ecs_service" "httpbin_fargate_firehose" {
   depends_on = [aws_alb.httpbin_fargate_firehose]
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.httpbin_fargate_firehose[0].arn
+    target_group_arn = aws_alb_target_group.httpbin_fargate_firehose.arn
     container_name   = "httpbin"
     container_port   = 8080
   }
@@ -124,11 +124,11 @@ resource "aws_alb_listener" "httpbin_fargate_firehose" {
   count = var.enable_fargate_httpbin_firehose ? 1 : 0
 
   default_action {
-    target_group_arn = aws_alb_target_group.httpbin_fargate_firehose[0].arn
+    target_group_arn = aws_alb_target_group.httpbin_fargate_firehose.arn
     type             = "forward"
   }
 
-  load_balancer_arn = aws_alb.httpbin_fargate_firehose[0].arn
+  load_balancer_arn = aws_alb.httpbin_fargate_firehose.arn
   port              = 80
 }
 
@@ -166,8 +166,8 @@ resource "aws_kinesis_firehose_delivery_stream" "httpbin_fargate_firehose" {
   destination = "splunk"
 
   s3_configuration {
-    role_arn           = aws_iam_role.httpbin_fargate_firehose[0].arn
-    bucket_arn         = aws_s3_bucket.httpbin_fargate_firehose[0].arn
+    role_arn           = aws_iam_role.httpbin_fargate_firehose.arn
+    bucket_arn         = aws_s3_bucket.httpbin_fargate_firehose.arn
     buffer_size        = 10
     buffer_interval    = 400
     compression_format = "GZIP"
@@ -182,8 +182,6 @@ resource "aws_kinesis_firehose_delivery_stream" "httpbin_fargate_firehose" {
 }
 
 resource "aws_s3_bucket" "httpbin_fargate_firehose" {
-  count = var.enable_fargate_httpbin_firehose ? 1 : 0
-
   bucket = "tf-firehose-httpbin-fargate"
   acl    = "private"
 }
@@ -232,8 +230,8 @@ resource "aws_iam_policy" "httpbin_fargate_firehose" {
                 "s3:PutObject"
             ],
             "Resource": [
-                "${aws_s3_bucket.httpbin_fargate_firehose[0].arn}",
-                "${aws_s3_bucket.httpbin_fargate_firehose[0].arn}/*"
+                "${aws_s3_bucket.httpbin_fargate_firehose.arn}",
+                "${aws_s3_bucket.httpbin_fargate_firehose.arn}/*"
             ]
         },
         {
@@ -243,7 +241,7 @@ resource "aws_iam_policy" "httpbin_fargate_firehose" {
                 "kinesis:GetShardIterator",
                 "kinesis:GetRecords"
             ],
-            "Resource": "${aws_kinesis_firehose_delivery_stream.httpbin_fargate_firehose[0].arn}"
+            "Resource": "${aws_kinesis_firehose_delivery_stream.httpbin_fargate_firehose.arn}"
         },
     {
       "Effect": "Allow",
@@ -264,7 +262,7 @@ EOF
 resource "aws_iam_role_policy_attachment" "httpbin_fargate_firehose" {
   count = var.enable_fargate_httpbin_firehose ? 1 : 0
 
-  role       = aws_iam_role.httpbin_fargate_firehose[0].name
-  policy_arn = aws_iam_policy.httpbin_fargate_firehose[0].arn
+  role       = aws_iam_role.httpbin_fargate_firehose.name
+  policy_arn = aws_iam_policy.httpbin_fargate_firehose.arn
 }
 
