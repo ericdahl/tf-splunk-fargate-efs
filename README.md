@@ -8,8 +8,8 @@ Fargate's 20 GB container limit was a problem for Splunk index data
 
 ## TODO
 
-- Debug Firelens -> Splunk delivery issue
-
+- reduce delivery stream delay
+- format logs with fields
 - Auto-enable HEC acknowledgement option
 - Auto-enable HEC HTTP (and update TG)
 - 
