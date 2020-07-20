@@ -10,6 +10,10 @@ Fargate's 20 GB container limit was a problem for Splunk index data
 
 - Debug Firelens -> Splunk delivery issue
 
+- Auto-enable HEC acknowledgement option
+- Auto-enable HEC HTTP (and update TG)
+- 
+
 - ALB or DNS CNAME to Splunk?
     - ECS Service Discovery?
 - clean up SGs

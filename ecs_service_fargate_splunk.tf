@@ -137,6 +137,17 @@ resource "aws_security_group_rule" "splunk_alb_ingress_8088_admin" {
   cidr_blocks = [var.admin_cidr]
 }
 
+resource "aws_security_group_rule" "splunk_alb_ingress_8088_all" { # TODO: remove; in place for Kinesis
+
+  security_group_id = aws_security_group.splunk_alb.id
+
+  type        = "ingress"
+  protocol    = "tcp"
+  from_port   = 8088
+  to_port     = 8088
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
 resource "aws_security_group_rule" "splunk_alb_egress_all" {
   security_group_id = aws_security_group.splunk_alb.id
   type              = "egress"
