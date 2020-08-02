@@ -36,5 +36,9 @@ ADD etc/apps/splunk_httpinput/local/inputs.conf /opt/splunk/etc/apps/splunk_http
 # Add "webapp" index
 ADD etc/apps/search/local/indexes.conf /opt/splunk/etc/apps/search/local/indexes.conf
 
+# Add "ecs" HEC tokens
+ADD etc/apps/launcher/local/inputs.conf /opt/splunk/etc/apps/launcher/local/inputs.conf
+
+
 WORKDIR /
 
