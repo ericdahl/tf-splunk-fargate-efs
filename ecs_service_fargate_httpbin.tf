@@ -1,12 +1,5 @@
-
-
-//data "template_file" "httpbin_fargate_firehose" {
-//  template = file("templates/httpbin-fargate-firehose.json")
-//}
-
-resource "aws_ecs_task_definition" "httpbin_fargate_firehose" {
+resource "aws_ecs_task_definition" "httpbin" {
   container_definitions = templatefile("templates/httpbin-fargate-firehose.json", {})
-//  container_definitions = data.template_file.httpbin_fargate_firehose.rendered
   family                = "httpbin-fargate"
 
   requires_compatibilities = [
@@ -19,10 +12,10 @@ resource "aws_ecs_task_definition" "httpbin_fargate_firehose" {
   cpu          = 256
   memory       = 512
 
-  task_role_arn = aws_iam_role.task_httpbin_fargate_firehose.arn
+  task_role_arn = aws_iam_role.task_httpbin.arn
 }
 
-resource "aws_iam_role" "task_httpbin_fargate_firehose" {
+resource "aws_iam_role" "task_httpbin" {
   name = "task-httpbin-fargate_firehose"
 
   assume_role_policy = <<EOF
@@ -43,8 +36,8 @@ EOF
 
 }
 
-resource "aws_iam_policy" "task_httpbin_fargate_firehose" {
-  name = "task_httpbin_fargate_firehose"
+resource "aws_iam_policy" "task_httpbin" {
+  name = "task_httpbin"
 
   policy = <<EOF
 {
@@ -63,17 +56,19 @@ EOF
 
 }
 
-resource "aws_iam_role_policy_attachment" "task_httpbin_fargate_firehose" {
-  role       = aws_iam_role.task_httpbin_fargate_firehose.name
-  policy_arn = aws_iam_policy.task_httpbin_fargate_firehose.arn
+resource "aws_iam_role_policy_attachment" "task_httpbin" {
+  role       = aws_iam_role.task_httpbin.name
+  policy_arn = aws_iam_policy.task_httpbin.arn
 }
 
-resource "aws_ecs_service" "httpbin_fargate_firehose" {
-  name            = "httpbin-fargate-firehose"
+resource "aws_ecs_service" "httpbin" {
+  name            = "httpbin"
   cluster         = aws_ecs_cluster.cluster.name
-  task_definition = aws_ecs_task_definition.httpbin_fargate_firehose.arn
+  task_definition = aws_ecs_task_definition.httpbin.arn
   desired_count   = 1
   launch_type     = "FARGATE"
+  platform_version = "1.4.0"
+
 
   network_configuration {
     security_groups = [
@@ -87,17 +82,18 @@ resource "aws_ecs_service" "httpbin_fargate_firehose" {
     ]
   }
 
-  depends_on = [aws_alb.httpbin_fargate_firehose]
+  depends_on = [aws_lb.httpbin]
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.httpbin_fargate_firehose.arn
+    target_group_arn = aws_lb_target_group.httpbin.arn
     container_name   = "httpbin"
     container_port   = 8080
   }
 }
 
-resource "aws_alb" "httpbin_fargate_firehose" {
-  name = "httpbin-fargate-firehose"
+resource "aws_lb" "httpbin" {
+  name = "httpbin-alb"
+  load_balancer_type = "application"
 
   subnets = [
     module.vpc.subnet_public1,
@@ -111,17 +107,17 @@ resource "aws_alb" "httpbin_fargate_firehose" {
   ]
 }
 
-resource "aws_alb_listener" "httpbin_fargate_firehose" {
+resource "aws_lb_listener" "httpbin" {
   default_action {
-    target_group_arn = aws_alb_target_group.httpbin_fargate_firehose.arn
+    target_group_arn = aws_lb_target_group.httpbin.arn
     type             = "forward"
   }
 
-  load_balancer_arn = aws_alb.httpbin_fargate_firehose.arn
+  load_balancer_arn = aws_lb.httpbin.arn
   port              = 80
 }
 
-resource "aws_alb_target_group" "httpbin_fargate_firehose" {
+resource "aws_lb_target_group" "httpbin" {
   name                 = "httpbin-fargate-firehose"
   vpc_id               = module.vpc.vpc_id
   port                 = 8080
@@ -137,20 +133,20 @@ resource "aws_alb_target_group" "httpbin_fargate_firehose" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "httpbin_fargate_firehose" {
+resource "aws_cloudwatch_log_group" "httpbin" {
   name = "/ecs/httpbin-fargate-firelens-firehose"
 
   retention_in_days = 7
 }
 
-resource "aws_kinesis_firehose_delivery_stream" "httpbin_fargate_firehose" {
+resource "aws_kinesis_firehose_delivery_stream" "httpbin" {
   name = "httpbin-fargate-firelens-app"
 
   destination = "splunk"
 
   s3_configuration {
-    role_arn           = aws_iam_role.httpbin_fargate_firehose.arn
-    bucket_arn         = aws_s3_bucket.httpbin_fargate_firehose.arn
+    role_arn           = aws_iam_role.httpbin.arn
+    bucket_arn         = aws_s3_bucket.httpbin.arn
     buffer_size        = 10
     buffer_interval    = 400
     compression_format = "GZIP"
@@ -165,12 +161,18 @@ resource "aws_kinesis_firehose_delivery_stream" "httpbin_fargate_firehose" {
 
 }
 
-resource "aws_s3_bucket" "httpbin_fargate_firehose" {
+resource "aws_cloudwatch_log_group" "httpbin_firehose" {
+  name = "/aws/kinesisfirehose/httpbin-fargate-firelens-app"
+
+  retention_in_days = 7
+}
+
+resource "aws_s3_bucket" "httpbin" {
   bucket = "tf-firehose-httpbin-fargate"
   acl    = "private"
 }
 
-resource "aws_iam_role" "httpbin_fargate_firehose" {
+resource "aws_iam_role" "httpbin" {
   name = "httpbin-fargate-firehose"
 
   assume_role_policy = <<EOF
@@ -191,8 +193,8 @@ EOF
 
 }
 
-resource "aws_iam_policy" "httpbin_fargate_firehose" {
-  name = "httpbin_fargate_firehose"
+resource "aws_iam_policy" "httpbin" {
+  name = "httpbin"
 
   policy = <<EOF
 {
@@ -210,8 +212,8 @@ resource "aws_iam_policy" "httpbin_fargate_firehose" {
                 "s3:PutObject"
             ],
             "Resource": [
-                "${aws_s3_bucket.httpbin_fargate_firehose.arn}",
-                "${aws_s3_bucket.httpbin_fargate_firehose.arn}/*"
+                "${aws_s3_bucket.httpbin.arn}",
+                "${aws_s3_bucket.httpbin.arn}/*"
             ]
         },
         {
@@ -221,7 +223,7 @@ resource "aws_iam_policy" "httpbin_fargate_firehose" {
                 "kinesis:GetShardIterator",
                 "kinesis:GetRecords"
             ],
-            "Resource": "${aws_kinesis_firehose_delivery_stream.httpbin_fargate_firehose.arn}"
+            "Resource": "${aws_kinesis_firehose_delivery_stream.httpbin.arn}"
         },
     {
       "Effect": "Allow",
@@ -239,12 +241,12 @@ EOF
 
 }
 
-resource "aws_iam_role_policy_attachment" "httpbin_fargate_firehose" {
-  role       = aws_iam_role.httpbin_fargate_firehose.name
-  policy_arn = aws_iam_policy.httpbin_fargate_firehose.arn
+resource "aws_iam_role_policy_attachment" "httpbin" {
+  role       = aws_iam_role.httpbin.name
+  policy_arn = aws_iam_policy.httpbin.arn
 }
 
-resource "aws_route53_record" "httpbin_fargate_firehose" {
+resource "aws_route53_record" "httpbin" {
   zone_id = var.route53_zone_id
   name    = "httpbin"
   type    = "CNAME"
@@ -252,6 +254,6 @@ resource "aws_route53_record" "httpbin_fargate_firehose" {
   ttl = 15
 
   records = [
-    aws_alb.httpbin_fargate_firehose.dns_name
+    aws_lb.httpbin.dns_name
   ]
 }

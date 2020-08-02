@@ -8,11 +8,13 @@ Fargate's 20 GB container limit was a problem for Splunk index data
 
 ## TODO
 
-- reduce delivery stream delay
-- format logs with fields
 - Auto-enable HEC acknowledgement option
 - Auto-enable HEC HTTP (and update TG)
+- Auto-enable HEC source-type json
 - 
+
+- reduce delivery stream delay
+- HTTPS only on console?
 
 - ALB or DNS CNAME to Splunk?
     - ECS Service Discovery?

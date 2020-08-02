@@ -1,6 +1,4 @@
 resource "aws_ecs_task_definition" "splunk" {
-//  container_definitions = data.template_file.splunk.rendered
-
   container_definitions = templatefile("templates/splunk.json", { efs_file_system_id = aws_efs_file_system.splunk.id})
   family                = "splunk"
 
@@ -92,7 +90,7 @@ resource "aws_ecs_service" "splunk" {
 
 
   deployment_minimum_healthy_percent = 0
-  health_check_grace_period_seconds = 180
+  health_check_grace_period_seconds = 18000
 
 
   # Service will fail to be created if the ALB isn't there yet
@@ -101,6 +99,8 @@ resource "aws_ecs_service" "splunk" {
 
 resource "aws_cloudwatch_log_group" "splunk" {
   name = "tf_splunk_fargate_efs"
+
+  retention_in_days = 7
 }
 
 resource "aws_security_group" "splunk_alb" {
@@ -117,6 +117,17 @@ resource "aws_security_group_rule" "splunk_alb_ingress_443_admin" {
   protocol    = "tcp"
   from_port   = 443
   to_port     = 443
+  cidr_blocks = [var.admin_cidr]
+}
+
+resource "aws_security_group_rule" "splunk_alb_ingress_80_admin" {
+
+  security_group_id = aws_security_group.splunk_alb.id
+
+  type        = "ingress"
+  protocol    = "tcp"
+  from_port   = 80
+  to_port     = 80
   cidr_blocks = [var.admin_cidr]
 }
 
@@ -217,6 +228,20 @@ resource "aws_lb_listener" "splunk_console" {
 
   depends_on = [
   aws_route53_record.acm_validation
+  ]
+}
+
+resource "aws_lb_listener" "splunk_console_http" {
+  load_balancer_arn = aws_lb.splunk_alb.arn
+  port = 80
+  protocol          = "HTTP"
+  default_action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.splunk_alb_console.arn
+  }
+
+  depends_on = [
+    aws_route53_record.acm_validation
   ]
 }
 
