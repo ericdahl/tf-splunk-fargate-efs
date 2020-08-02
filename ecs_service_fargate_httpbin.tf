@@ -62,11 +62,11 @@ resource "aws_iam_role_policy_attachment" "task_httpbin" {
 }
 
 resource "aws_ecs_service" "httpbin" {
-  name            = "httpbin"
-  cluster         = aws_ecs_cluster.cluster.name
-  task_definition = aws_ecs_task_definition.httpbin.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
+  name             = "httpbin"
+  cluster          = aws_ecs_cluster.cluster.name
+  task_definition  = aws_ecs_task_definition.httpbin.arn
+  desired_count    = 1
+  launch_type      = "FARGATE"
   platform_version = "1.4.0"
 
 
@@ -92,7 +92,7 @@ resource "aws_ecs_service" "httpbin" {
 }
 
 resource "aws_lb" "httpbin" {
-  name = "httpbin-alb"
+  name               = "httpbin-alb"
   load_balancer_type = "application"
 
   subnets = [
@@ -153,8 +153,8 @@ resource "aws_kinesis_firehose_delivery_stream" "httpbin" {
   }
 
   splunk_configuration {
-    hec_endpoint = "https://splunk.ecd-dev.net:8088" # FIXME
-    hec_token = "bb3714bf-b59c-4971-94b7-30c9244c803a" # FIXME : SSM Parameter?
+    hec_endpoint = "https://splunk.ecd-dev.net:8088"      # FIXME
+    hec_token    = "bb3714bf-b59c-4971-94b7-30c9244c803a" # FIXME : SSM Parameter?
 
     retry_duration = 30
   }

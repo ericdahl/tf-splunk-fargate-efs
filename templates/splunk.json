@@ -1,7 +1,7 @@
 [
   {
     "name": "splunk",
-    "image": "ericdahl/splunk-efs:bf9e064",
+    "image": "ericdahl/splunk-efs:be67222",
     "portMappings": [
       {
         "containerPort": 8000,

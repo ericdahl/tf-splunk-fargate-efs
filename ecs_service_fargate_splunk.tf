@@ -1,5 +1,5 @@
 resource "aws_ecs_task_definition" "splunk" {
-  container_definitions = templatefile("templates/splunk.json", { efs_file_system_id = aws_efs_file_system.splunk.id})
+  container_definitions = templatefile("templates/splunk.json", { efs_file_system_id = aws_efs_file_system.splunk.id })
   family                = "splunk"
 
   requires_compatibilities = [
@@ -90,7 +90,7 @@ resource "aws_ecs_service" "splunk" {
 
 
   deployment_minimum_healthy_percent = 0
-  health_check_grace_period_seconds = 18000
+  health_check_grace_period_seconds  = 18000
 
 
   # Service will fail to be created if the ALB isn't there yet
@@ -188,7 +188,7 @@ resource "aws_lb" "splunk_alb" {
 }
 
 resource "aws_acm_certificate" "splunk" {
-  domain_name = aws_route53_record.splunk_alb.fqdn
+  domain_name       = aws_route53_record.splunk_alb.fqdn
   validation_method = "DNS"
 
   tags = {
@@ -203,8 +203,8 @@ resource "aws_acm_certificate_validation" "splunk" {
 }
 
 resource "aws_route53_record" "acm_validation" {
-  name =  aws_acm_certificate.splunk.domain_validation_options[0].resource_record_name
-  type = aws_acm_certificate.splunk.domain_validation_options[0].resource_record_type
+  name    = aws_acm_certificate.splunk.domain_validation_options[0].resource_record_name
+  type    = aws_acm_certificate.splunk.domain_validation_options[0].resource_record_type
   zone_id = var.route53_zone_id
 
   ttl = 15
@@ -216,27 +216,27 @@ resource "aws_route53_record" "acm_validation" {
 
 resource "aws_lb_listener" "splunk_console" {
   load_balancer_arn = aws_lb.splunk_alb.arn
-  port = 443
+  port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.splunk_alb_console.arn
   }
 
   certificate_arn = aws_acm_certificate.splunk.arn
 
   depends_on = [
-  aws_route53_record.acm_validation
+    aws_route53_record.acm_validation
   ]
 }
 
 resource "aws_lb_listener" "splunk_console_http" {
   load_balancer_arn = aws_lb.splunk_alb.arn
-  port = 80
+  port              = 80
   protocol          = "HTTP"
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.splunk_alb_console.arn
   }
 
@@ -247,11 +247,11 @@ resource "aws_lb_listener" "splunk_console_http" {
 
 resource "aws_lb_listener" "splunk_hec" {
   load_balancer_arn = aws_lb.splunk_alb.arn
-  port = 8088
+  port              = 8088
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.splunk_alb_hec.arn
   }
 
@@ -263,7 +263,7 @@ resource "aws_lb_listener" "splunk_hec" {
 }
 
 resource "aws_lb_target_group" "splunk_alb_hec" {
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
   name        = "splunk-tg-hec"
   port        = 8088
   protocol    = "HTTP" # TODO: HTTPS?
@@ -272,14 +272,17 @@ resource "aws_lb_target_group" "splunk_alb_hec" {
   deregistration_delay = 3
 
   health_check {
-    protocol = "HTTPS"
-    path = "/services/collector/health"
+    protocol          = "HTTPS"
+    path              = "/services/collector/health"
+    healthy_threshold = 2
+    interval          = 5
+    timeout           = 2
   }
 
 }
 
 resource "aws_lb_target_group" "splunk_alb_console" {
-  vpc_id = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
   name        = "splunk-tg-console"
   port        = 8000
   protocol    = "HTTP"
@@ -290,6 +293,10 @@ resource "aws_lb_target_group" "splunk_alb_console" {
 
   health_check {
     matcher = "200-399"
+
+    healthy_threshold = 2
+    interval          = 5
+    timeout           = 2
   }
 }
 
