@@ -9,6 +9,10 @@
         "protocol": "tcp"
       }
     ],
+    "cpu": 0,
+    "environment": [],
+    "mountPoints": [],
+    "volumesFrom": [],
     "essential": true,
     "logConfiguration": {
       "logDriver": "awsfirelens",
@@ -22,6 +26,11 @@
   {
     "name": "redis",
     "image": "redis",
+    "portMappings": [],
+    "cpu": 0,
+    "environment": [],
+    "mountPoints": [],
+    "volumesFrom": [],
     "essential": true,
     "logConfiguration": {
       "logDriver": "awsfirelens",
@@ -35,9 +44,12 @@
   {
     "name": "firelens",
     "image": "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:latest",
-    "firelensConfiguration": {
-      "type": "fluentbit"
-    },
+    "user": "0",
+    "portMappings": [],
+    "cpu": 0,
+    "environment": [],
+    "mountPoints": [],
+    "volumesFrom": [],
     "essential": true,
     "logConfiguration": {
       "logDriver": "awslogs",
@@ -46,6 +58,9 @@
         "awslogs-region": "us-east-1",
         "awslogs-stream-prefix": "firelens"
       }
+    },
+    "firelensConfiguration": {
+      "type": "fluentbit"
     }
   }
 ]
