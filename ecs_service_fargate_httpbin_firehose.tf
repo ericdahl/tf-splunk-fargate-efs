@@ -1,9 +1,12 @@
-data "template_file" "httpbin_fargate_firehose" {
-  template = file("templates/httpbin-fargate-firehose.json")
-}
+
+
+//data "template_file" "httpbin_fargate_firehose" {
+//  template = file("templates/httpbin-fargate-firehose.json")
+//}
 
 resource "aws_ecs_task_definition" "httpbin_fargate_firehose" {
-  container_definitions = data.template_file.httpbin_fargate_firehose.rendered
+  container_definitions = templatefile("templates/httpbin-fargate-firehose.json", {})
+//  container_definitions = data.template_file.httpbin_fargate_firehose.rendered
   family                = "httpbin-fargate"
 
   requires_compatibilities = [
@@ -241,3 +244,14 @@ resource "aws_iam_role_policy_attachment" "httpbin_fargate_firehose" {
   policy_arn = aws_iam_policy.httpbin_fargate_firehose.arn
 }
 
+resource "aws_route53_record" "httpbin_fargate_firehose" {
+  zone_id = var.route53_zone_id
+  name    = "httpbin"
+  type    = "CNAME"
+
+  ttl = 15
+
+  records = [
+    aws_alb.httpbin_fargate_firehose.dns_name
+  ]
+}

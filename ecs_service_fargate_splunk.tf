@@ -1,13 +1,7 @@
-data "template_file" "splunk" {
-  template = file("templates/splunk.json")
-
-  vars = {
-    efs_file_system_id = aws_efs_file_system.splunk.id
-  }
-}
-
 resource "aws_ecs_task_definition" "splunk" {
-  container_definitions = data.template_file.splunk.rendered
+//  container_definitions = data.template_file.splunk.rendered
+
+  container_definitions = templatefile("templates/splunk.json", { efs_file_system_id = aws_efs_file_system.splunk.id})
   family                = "splunk"
 
   requires_compatibilities = [
@@ -189,6 +183,12 @@ resource "aws_acm_certificate" "splunk" {
   tags = {
     Name = aws_route53_record.splunk_alb.fqdn
   }
+}
+
+resource "aws_acm_certificate_validation" "splunk" {
+  certificate_arn = aws_acm_certificate.splunk.arn
+
+  validation_record_fqdns = [aws_route53_record.acm_validation.fqdn]
 }
 
 resource "aws_route53_record" "acm_validation" {
