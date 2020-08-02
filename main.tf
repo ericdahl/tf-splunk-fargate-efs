@@ -33,7 +33,8 @@ resource "aws_instance" "default" {
   vpc_security_group_ids = [
     module.vpc.sg_allow_vpc,
     module.vpc.sg_allow_22,
-    module.vpc.sg_allow_egress
+    module.vpc.sg_allow_egress,
+    aws_security_group.splunk.id #  hack to allow it to mount the EFS volume
   ]
 
   key_name = aws_key_pair.ecd.key_name
