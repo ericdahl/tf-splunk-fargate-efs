@@ -1,0 +1,9 @@
+# See https://splunk.github.io/docker-splunk/ADVANCED.html
+# Also see `/opt/ansible/roles/splunk_common` in splunk/splunk image
+---
+splunk:
+  hec:
+    enable: true
+    port: 8088
+    ssl: False
+
