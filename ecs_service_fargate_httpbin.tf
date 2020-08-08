@@ -153,8 +153,8 @@ resource "aws_kinesis_firehose_delivery_stream" "httpbin" {
   }
 
   splunk_configuration {
-    hec_endpoint = "https://splunk.ecd-dev.net:8088"      # FIXME
-    hec_token    = "bb3714bf-b59c-4971-94b7-30c9244c803a" # FIXME : SSM Parameter?
+    hec_endpoint = "https://splunk.ecd-dev.net:8088"
+    hec_token    = "11111111-1111-1111-1111-111111111111"
 
     retry_duration = 30
   }
