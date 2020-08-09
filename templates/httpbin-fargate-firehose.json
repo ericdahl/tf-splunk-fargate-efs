@@ -19,7 +19,7 @@
       "options": {
         "Name": "firehose",
         "region": "us-east-1",
-        "delivery_stream": "httpbin-fargate-firelens-app"
+        "delivery_stream": "splunk"
       }
     }
   },
@@ -37,7 +37,7 @@
       "options": {
         "Name": "firehose",
         "region": "us-east-1",
-        "delivery_stream": "httpbin-fargate-firelens-app"
+        "delivery_stream": "splunk"
       }
     }
   },

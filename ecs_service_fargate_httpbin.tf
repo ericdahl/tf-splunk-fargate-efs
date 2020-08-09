@@ -88,6 +88,12 @@ resource "aws_lb_target_group" "httpbin" {
   }
 }
 
+# Logs from fluent-bit sidecar on httpbin service
+resource "aws_cloudwatch_log_group" "httpbin" {
+  name = "/ecs/httpbin-fargate-firelens-firehose"
+  retention_in_days = 7
+}
+
 resource "aws_route53_record" "httpbin" {
   zone_id = var.route53_zone_id
   name    = "httpbin"
