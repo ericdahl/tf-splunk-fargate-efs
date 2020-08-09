@@ -8,7 +8,6 @@ Fargate's 20 GB container limit was a problem for Splunk index data
 
 ## TODO
 
-- debug logs not working for first 30 min? random?
 - reduce delivery stream delay
 - HTTPS only on console?
 
