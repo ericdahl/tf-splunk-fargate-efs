@@ -22,6 +22,7 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
 resource "aws_s3_bucket" "httpbin" {
   bucket = "tf-firehose-httpbin-fargate"
   acl    = "private"
+  force_destroy = true
 }
 
 resource "aws_cloudwatch_log_group" "httpbin_firehose" {
