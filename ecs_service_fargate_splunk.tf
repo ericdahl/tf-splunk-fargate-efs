@@ -266,7 +266,7 @@ resource "aws_lb_target_group" "splunk_alb_hec" {
   vpc_id      = module.vpc.vpc_id
   name        = "splunk-tg-hec"
   port        = 8088
-  protocol    = "HTTP" # TODO: HTTPS?
+  protocol    = "HTTP"
   target_type = "ip"
 
   deregistration_delay = 3
