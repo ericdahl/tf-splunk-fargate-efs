@@ -10,5 +10,6 @@ Fargate's 20 GB container limit was a problem for Splunk index data
 
 - reduce delivery stream delay
 - HTTPS only on console?
+- fargate private IP
 
 - clean up SGs
