@@ -13,19 +13,16 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 
-
-
-
-
 data "aws_ssm_parameter" "ecs_optimized" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
 }
 
-resource "aws_key_pair" "ecd" {
+resource "aws_key_pair" "default" {
   public_key = var.public_key
 }
 
-resource "aws_instance" "default" {
+# used just for debugging from within the VPC; not necessary
+resource "aws_instance" "jumphost" {
   subnet_id     = module.vpc.subnet_public1
   ami           = data.aws_ssm_parameter.ecs_optimized.value
   instance_type = "t3.medium"
@@ -37,7 +34,7 @@ resource "aws_instance" "default" {
     aws_security_group.splunk.id #  hack to allow it to mount the EFS volume
   ]
 
-  key_name = aws_key_pair.ecd.key_name
+  key_name = aws_key_pair.default.key_name
 }
 
 
