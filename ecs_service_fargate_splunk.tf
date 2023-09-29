@@ -1,5 +1,4 @@
 resource "aws_ecs_task_definition" "splunk" {
-  container_definitions = templatefile("templates/splunk.json", { efs_file_system_id = aws_efs_file_system.splunk.id })
   family                = "splunk"
 
   requires_compatibilities = [
@@ -19,6 +18,51 @@ resource "aws_ecs_task_definition" "splunk" {
       file_system_id = aws_efs_file_system.splunk.id
     }
   }
+  
+  container_definitions = jsonencode([
+
+    {
+      name: "splunk",
+      image: "ericdahl/splunk-efs:d71292e",
+      portMappings: [
+        {
+          containerPort: 8000,
+          hostPort: 8000,
+          protocol: "tcp"
+        },
+        {
+          containerPort: 8088,
+          hostPort: 8088,
+          protocol: "tcp"
+        }
+      ],
+      environment: [
+        {
+          name: "SPLUNK_START_ARGS",
+          value: "--accept-license"
+        },
+        {
+          name: "SPLUNK_PASSWORD",
+          value: "password"
+        }
+      ],
+      mountpoints: [
+        {
+          sourceVolume: "opt-splunk",
+          containerPath: "/opt/splunk/var"
+        }
+      ],
+      logConfiguration: {
+        logDriver: "awslogs",
+        options: {
+          awslogs-group: "tf_splunk_fargate_efs",
+          awslogs-region: "us-east-1",
+          awslogs-stream-prefix: "splunk"
+        }
+      }
+    }
+  
+  ])
 }
 
 

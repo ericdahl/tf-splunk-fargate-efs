@@ -1,5 +1,5 @@
 resource "aws_ecs_task_definition" "httpbin" {
-  container_definitions = templatefile("templates/httpbin-fargate-firehose.json", {})
+
   family                = "httpbin-fargate"
 
   requires_compatibilities = [
@@ -13,6 +13,63 @@ resource "aws_ecs_task_definition" "httpbin" {
   memory       = 512
 
   task_role_arn = aws_iam_role.task_httpbin.arn
+
+  container_definitions = jsonencode([
+
+      {
+        name: "httpbin",
+        image: "ericdahl/httpbin:e249975",
+        portMappings: [
+          {
+            "containerPort": 8080,
+            "hostPort": 8080,
+            "protocol": "tcp"
+          }
+        ],
+        essential: true,
+        logConfiguration: {
+          logDriver: "awsfirelens",
+          options: {
+            Name: "firehose",
+            region: "us-east-1",
+            delivery_stream: "splunk"
+          }
+        }
+      },
+      # this is only here to show multiple container_names in logs
+      {
+        name: "redis",
+        image: "redis",
+        essential: true,
+        logConfiguration: {
+          logDriver: "awsfirelens",
+          options: {
+            Name: "firehose",
+            region: "us-east-1",
+            delivery_stream: "splunk"
+          }
+        }
+      },
+      {
+        name: "firelens",
+        image: "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:latest",
+        user: "0",
+        essential: true,
+        logConfiguration: {
+          logDriver: "awslogs",
+          options: {
+            awslogs-group: "/ecs/httpbin-fargate-firelens-firehose",
+            awslogs-region: "us-east-1",
+            awslogs-stream-prefix: "firelens"
+          }
+        },
+        firelensConfiguration: {
+          "type": "fluentbit"
+        }
+      }
+
+  ])
+
 }
 
 
@@ -20,7 +77,7 @@ resource "aws_ecs_service" "httpbin" {
   name             = "httpbin"
   cluster          = aws_ecs_cluster.cluster.name
   task_definition  = aws_ecs_task_definition.httpbin.arn
-  desired_count    = 1
+  desired_count    = 3
   launch_type      = "FARGATE"
   platform_version = "1.4.0"
 

@@ -19,6 +19,11 @@ indexes and HEC keys
 - Query Splunk: `index=ecs`
 
 
+## TODO
+- shorter log buffering? fluent-bit config?
+- remove HTTPS for simplicity?
+
+
 ### Debugging
 
 #### Nothing in Splunk;
