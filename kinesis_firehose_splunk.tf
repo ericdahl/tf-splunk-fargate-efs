@@ -3,19 +3,23 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
 
   destination = "splunk"
 
-  s3_configuration {
-    role_arn           = aws_iam_role.firehose_splunk.arn
-    bucket_arn         = aws_s3_bucket.httpbin.arn
-    buffer_size        = 10
-    buffer_interval    = 400
-    compression_format = "GZIP"
-  }
+
 
   splunk_configuration {
     hec_endpoint = "https://splunk.ecd-dev.net:8088"
     hec_token    = "11111111-1111-1111-1111-111111111111"
 
     retry_duration = 30
+
+
+    s3_configuration {
+      role_arn           = aws_iam_role.firehose_splunk.arn
+      bucket_arn         = aws_s3_bucket.httpbin.arn
+      buffering_size        = 10
+      buffering_interval    = 400
+      compression_format = "GZIP"
+    }
+
   }
 }
 
