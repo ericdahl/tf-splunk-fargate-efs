@@ -1,6 +1,6 @@
 resource "aws_ecs_task_definition" "httpbin" {
 
-  family                = "httpbin-fargate"
+  family = "httpbin-fargate"
 
   requires_compatibilities = [
     "FARGATE",
@@ -16,57 +16,57 @@ resource "aws_ecs_task_definition" "httpbin" {
 
   container_definitions = jsonencode([
 
-      {
-        name: "httpbin",
-        image: "ericdahl/httpbin:e249975",
-        portMappings: [
-          {
-            "containerPort": 8080,
-            "hostPort": 8080,
-            "protocol": "tcp"
-          }
-        ],
-        essential: true,
-        logConfiguration: {
-          logDriver: "awsfirelens",
-          options: {
-            Name: "firehose",
-            region: "us-east-1",
-            delivery_stream: "splunk"
-          }
+    {
+      name : "httpbin",
+      image : "ericdahl/httpbin:e249975",
+      portMappings : [
+        {
+          "containerPort" : 8080,
+          "hostPort" : 8080,
+          "protocol" : "tcp"
         }
-      },
-      # this is only here to show multiple container_names in logs
-      {
-        name: "redis",
-        image: "redis",
-        essential: true,
-        logConfiguration: {
-          logDriver: "awsfirelens",
-          options: {
-            Name: "firehose",
-            region: "us-east-1",
-            delivery_stream: "splunk"
-          }
-        }
-      },
-      {
-        name: "firelens",
-        image: "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:latest",
-        user: "0",
-        essential: true,
-        logConfiguration: {
-          logDriver: "awslogs",
-          options: {
-            awslogs-group: "/ecs/httpbin-fargate-firelens-firehose",
-            awslogs-region: "us-east-1",
-            awslogs-stream-prefix: "firelens"
-          }
-        },
-        firelensConfiguration: {
-          "type": "fluentbit"
+      ],
+      essential : true,
+      logConfiguration : {
+        logDriver : "awsfirelens",
+        options : {
+          Name : "firehose",
+          region : "us-east-1",
+          delivery_stream : "splunk"
         }
       }
+    },
+    # this is only here to show multiple container_names in logs
+    {
+      name : "redis",
+      image : "redis",
+      essential : true,
+      logConfiguration : {
+        logDriver : "awsfirelens",
+        options : {
+          Name : "firehose",
+          region : "us-east-1",
+          delivery_stream : "splunk"
+        }
+      }
+    },
+    {
+      name : "firelens",
+      image : "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:latest",
+      user : "0",
+      essential : true,
+      logConfiguration : {
+        logDriver : "awslogs",
+        options : {
+          awslogs-group : "/ecs/httpbin-fargate-firelens-firehose",
+          awslogs-region : "us-east-1",
+          awslogs-stream-prefix : "firelens"
+        }
+      },
+      firelensConfiguration : {
+        "type" : "fluentbit"
+      }
+    }
 
   ])
 
@@ -147,7 +147,7 @@ resource "aws_lb_target_group" "httpbin" {
 
 # Logs from fluent-bit sidecar on httpbin service
 resource "aws_cloudwatch_log_group" "httpbin" {
-  name = "/ecs/httpbin-fargate-firelens-firehose"
+  name              = "/ecs/httpbin-fargate-firelens-firehose"
   retention_in_days = 7
 }
 

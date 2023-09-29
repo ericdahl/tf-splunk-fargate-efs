@@ -1,5 +1,5 @@
 resource "aws_ecs_task_definition" "splunk" {
-  family                = "splunk"
+  family = "splunk"
 
   requires_compatibilities = [
     "FARGATE",
@@ -18,50 +18,50 @@ resource "aws_ecs_task_definition" "splunk" {
       file_system_id = aws_efs_file_system.splunk.id
     }
   }
-  
+
   container_definitions = jsonencode([
 
     {
-      name: "splunk",
-      image: "ericdahl/splunk-efs:d71292e",
-      portMappings: [
+      name : "splunk",
+      image : "ericdahl/splunk-efs:d71292e",
+      portMappings : [
         {
-          containerPort: 8000,
-          hostPort: 8000,
-          protocol: "tcp"
+          containerPort : 8000,
+          hostPort : 8000,
+          protocol : "tcp"
         },
         {
-          containerPort: 8088,
-          hostPort: 8088,
-          protocol: "tcp"
+          containerPort : 8088,
+          hostPort : 8088,
+          protocol : "tcp"
         }
       ],
-      environment: [
+      environment : [
         {
-          name: "SPLUNK_START_ARGS",
-          value: "--accept-license"
+          name : "SPLUNK_START_ARGS",
+          value : "--accept-license"
         },
         {
-          name: "SPLUNK_PASSWORD",
-          value: "password"
+          name : "SPLUNK_PASSWORD",
+          value : "password"
         }
       ],
-      mountpoints: [
+      mountpoints : [
         {
-          sourceVolume: "opt-splunk",
-          containerPath: "/opt/splunk/var"
+          sourceVolume : "opt-splunk",
+          containerPath : "/opt/splunk/var"
         }
       ],
-      logConfiguration: {
-        logDriver: "awslogs",
-        options: {
-          awslogs-group: "tf_splunk_fargate_efs",
-          awslogs-region: "us-east-1",
-          awslogs-stream-prefix: "splunk"
+      logConfiguration : {
+        logDriver : "awslogs",
+        options : {
+          awslogs-group : "tf_splunk_fargate_efs",
+          awslogs-region : "us-east-1",
+          awslogs-stream-prefix : "splunk"
         }
       }
     }
-  
+
   ])
 }
 
