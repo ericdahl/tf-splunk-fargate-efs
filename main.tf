@@ -21,6 +21,11 @@ resource "aws_key_pair" "default" {
   public_key = var.public_key
 }
 
+locals {
+  splunk_hec_token_ack = "11111111-1111-1111-1111-111111111111"
+}
+
+
 # used just for debugging from within the VPC; not necessary
 resource "aws_instance" "jumphost" {
   subnet_id     = module.vpc.subnet_public1

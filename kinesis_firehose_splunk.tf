@@ -1,16 +1,12 @@
 resource "aws_kinesis_firehose_delivery_stream" "splunk" {
-  name = "splunk"
-
+  name        = "splunk"
   destination = "splunk"
-
-
 
   splunk_configuration {
     hec_endpoint = "https://splunk.ecd-dev.net:8088"
-    hec_token    = "11111111-1111-1111-1111-111111111111"
+    hec_token    = local.splunk_hec_token_ack
 
     retry_duration = 30
-
 
     s3_configuration {
       role_arn           = aws_iam_role.firehose_splunk.arn
