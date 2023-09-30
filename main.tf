@@ -17,8 +17,21 @@ module "vpc" {
 
 resource "aws_ecs_cluster" "cluster" {
   name = "tf-splunk-fargate-ecs"
+
+
 }
 
+resource "aws_ecs_cluster_capacity_providers" "example" {
+  cluster_name = aws_ecs_cluster.cluster.name
+
+  capacity_providers = ["FARGATE"]
+
+  default_capacity_provider_strategy {
+    base              = 1
+    weight            = 100
+    capacity_provider = "FARGATE"
+  }
+}
 
 data "aws_ssm_parameter" "ecs_optimized" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"

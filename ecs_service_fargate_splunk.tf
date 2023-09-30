@@ -1,10 +1,6 @@
 resource "aws_ecs_task_definition" "splunk" {
   family = "splunk"
 
-  requires_compatibilities = [
-    "FARGATE",
-  ]
-
   network_mode = "awsvpc"
   cpu          = 4096
   memory       = 10240
@@ -20,7 +16,6 @@ resource "aws_ecs_task_definition" "splunk" {
   }
 
   container_definitions = jsonencode([
-
     {
       name : "splunk",
       image : "ericdahl/splunk-efs:d71292e",

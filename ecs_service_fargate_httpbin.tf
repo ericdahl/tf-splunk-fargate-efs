@@ -2,9 +2,9 @@ resource "aws_ecs_task_definition" "httpbin" {
 
   family = "httpbin-fargate"
 
-  requires_compatibilities = [
-    "FARGATE",
-  ]
+#  requires_compatibilities = [
+#    "FARGATE",
+#  ]
 
   execution_role_arn = aws_iam_role.httpbin_execution_role.arn
 
@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "httpbin" {
     },
     {
       name : "firelens",
-      image : "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:latest",
+      image: "public.ecr.aws/aws-observability/aws-for-fluent-bit:latest",
       user : "0",
       essential : true,
       logConfiguration : {
