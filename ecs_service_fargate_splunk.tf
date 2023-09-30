@@ -322,7 +322,7 @@ resource "aws_lb_target_group" "splunk_alb_hec" {
   deregistration_delay = 3
 
   health_check {
-    protocol          = "HTTPS"
+    protocol          = "HTTP"
     path              = "/services/collector/health"
     healthy_threshold = 2
     interval          = 5
