@@ -1,48 +1,28 @@
 resource "aws_iam_role" "splunk_execution_role" {
 
   name = "splunk-execution-role"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
+  assume_role_policy = data.aws_iam_policy_document.assume_role_ecs_tasks.json
 }
-EOF
 
+data "aws_iam_policy_document" "execution_role_splunk" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecr:GetAuthorizationToken",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_policy" "splunk_execution_role" {
   name = "splunk-execution-role"
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ecr:GetAuthorizationToken",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-
-EOF
-
+  policy = data.aws_iam_policy_document.execution_role_splunk.json
 }
 
 resource "aws_iam_role_policy_attachment" "splunk_iam_execution" {
