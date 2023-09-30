@@ -14,23 +14,6 @@ resource "aws_lb" "splunk_alb" {
   ]
 }
 
-resource "aws_lb_listener" "splunk_console" {
-  load_balancer_arn = aws_lb.splunk_alb.arn
-  port              = 443
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.splunk_alb_console.arn
-  }
-
-  certificate_arn = aws_acm_certificate.splunk.arn
-
-  depends_on = [
-    aws_route53_record.acm_validation
-  ]
-}
-
 resource "aws_lb_listener" "splunk_console_http" {
   load_balancer_arn = aws_lb.splunk_alb.arn
   port              = 80
@@ -39,27 +22,16 @@ resource "aws_lb_listener" "splunk_console_http" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.splunk_alb_console.arn
   }
-
-  depends_on = [
-    aws_route53_record.acm_validation
-  ]
 }
 
 resource "aws_lb_listener" "splunk_hec" {
   load_balancer_arn = aws_lb.splunk_alb.arn
   port              = 8088
   protocol          = "HTTP"
-  #  ssl_policy        = "ELBSecurityPolicy-2016-08"
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.splunk_alb_hec.arn
   }
-
-  #  certificate_arn = aws_acm_certificate.splunk.arn
-
-  depends_on = [
-    aws_route53_record.acm_validation
-  ]
 }
 
 resource "aws_lb_target_group" "splunk_alb_hec" {

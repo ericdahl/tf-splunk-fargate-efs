@@ -33,10 +33,11 @@ locals {
 
 
   splunk_alb_hec_endpoint = "${lower(aws_lb_listener.splunk_hec.protocol)}://${aws_lb.splunk_alb.dns_name}:${aws_lb_listener.splunk_hec.port}"
-  splunk_alb_console_endpoint = "${lower(aws_lb_listener.splunk_console.protocol)}://${aws_lb.splunk_alb.dns_name}:${aws_lb_listener.splunk_console.port}"
+  splunk_alb_console_endpoint = "${lower(aws_lb_listener.splunk_console_http.protocol)}://${aws_lb.splunk_alb.dns_name}:${aws_lb_listener.splunk_console_http.port}"
   splunk_cloudfront_hec_endpoint = "https://${aws_cloudfront_distribution.splunk.domain_name}/services/collector/event"
   splunk_cloudfront_console_endpoint = "https://${aws_cloudfront_distribution.splunk.domain_name}"
 
+  httpbin_alb_endpoint = "${lower(aws_lb_listener.httpbin.protocol)}://${aws_lb.httpbin.dns_name}"
 }
 
 

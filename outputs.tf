@@ -19,15 +19,8 @@ output "splunk" {
   }
 }
 
-#output "httpbin" {
-#  value = {
-#    alb = {
-#      console = local.splunk_alb_console_endpoint
-#      hec = local.splunk_alb_hec_endpoint
-#    }
-#    cloudfront = {
-#      console = local.splunk_cloudfront_console_endpoint
-#      hec = local.splunk_alb_hec_endpoint
-#    }
-#  }
-#}
+
+
+output "httpbin" {
+  value = local.httpbin_alb_endpoint
+}

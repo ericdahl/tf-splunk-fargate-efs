@@ -10,7 +10,7 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
 
     s3_configuration {
       role_arn           = aws_iam_role.firehose_splunk.arn
-      bucket_arn         = aws_s3_bucket.httpbin.arn
+      bucket_arn         = aws_s3_bucket.kinesis_stream_splunk_backup.arn
       buffering_size     = 10
       buffering_interval = 400
       compression_format = "GZIP"
@@ -19,9 +19,8 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
   }
 }
 
-resource "aws_s3_bucket" "httpbin" {
-  bucket        = "tf-firehose-httpbin-fargate"
-  acl           = "private"
+resource "aws_s3_bucket" "kinesis_stream_splunk_backup" {
+  bucket        = data.aws_default_tags.default.tags["Name"]
   force_destroy = true
 }
 

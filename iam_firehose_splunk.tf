@@ -39,8 +39,8 @@ resource "aws_iam_policy" "firehose_splunk" {
                 "s3:PutObject"
             ],
             "Resource": [
-                "${aws_s3_bucket.httpbin.arn}",
-                "${aws_s3_bucket.httpbin.arn}/*"
+                "${aws_s3_bucket.kinesis_stream_splunk_backup.arn}",
+                "${aws_s3_bucket.kinesis_stream_splunk_backup.arn}/*"
             ]
         },
         {
