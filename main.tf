@@ -1,7 +1,14 @@
 provider "aws" {
   region = "us-east-1"
+
+  default_tags {
+    tags = {
+      Name = "tf-splunk-fargate-efs"
+    }
+  }
 }
 
+data "aws_default_tags" "default" {}
 
 module "vpc" {
   source        = "github.com/ericdahl/tf-vpc"
@@ -23,6 +30,13 @@ resource "aws_key_pair" "default" {
 
 locals {
   splunk_hec_token_ack = "11111111-1111-1111-1111-111111111111"
+
+
+  splunk_alb_hec_endpoint = "${lower(aws_lb_listener.splunk_hec.protocol)}://${aws_lb.splunk_alb.dns_name}:${aws_lb_listener.splunk_hec.port}"
+  splunk_alb_console_endpoint = "${lower(aws_lb_listener.splunk_console.protocol)}://${aws_lb.splunk_alb.dns_name}:${aws_lb_listener.splunk_console.port}"
+  splunk_cloudfront_hec_endpoint = "https://${aws_cloudfront_distribution.splunk.domain_name}/services/collector/event"
+  splunk_cloudfront_console_endpoint = "https://${aws_cloudfront_distribution.splunk.domain_name}"
+
 }
 
 

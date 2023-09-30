@@ -3,7 +3,7 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
   destination = "splunk"
 
   splunk_configuration {
-    hec_endpoint = "https://splunk.ecd-dev.net:8088"
+    hec_endpoint = local.splunk_cloudfront_hec_endpoint
     hec_token    = local.splunk_hec_token_ack
 
     retry_duration = 30

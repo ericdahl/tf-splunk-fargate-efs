@@ -21,7 +21,9 @@ indexes and HEC keys
 
 ## TODO
 - shorter log buffering? fluent-bit config?
-- remove HTTPS for simplicity?
+- default capacity provdier rather than launch type.. ?
+- check unhealthy targets
+- iam policy cleanup
 
 
 ### Debugging
