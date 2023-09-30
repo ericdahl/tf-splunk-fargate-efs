@@ -2,7 +2,7 @@ data "aws_iam_policy_document" "assume_role_firehose" {
   statement {
     effect = "Allow"
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = ["firehose.amazonaws.com"]
     }
     actions = ["sts:AssumeRole"]
@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "assume_role_firehose" {
 }
 
 resource "aws_iam_role" "firehose_splunk" {
-  name = "firehose-stream-splunk"
+  name               = "firehose-stream-splunk"
   assume_role_policy = data.aws_iam_policy_document.assume_role_firehose.json
 }
 
@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "firehose_splunk" {
 
 
 resource "aws_iam_policy" "firehose_splunk" {
-  name = "firehose-stream-splunk"
+  name   = "firehose-stream-splunk"
   policy = data.aws_iam_policy_document.firehose_splunk.json
 }
 

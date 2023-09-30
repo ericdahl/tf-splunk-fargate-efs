@@ -7,8 +7,8 @@ resource "aws_iam_role" "task_httpbin" {
 
 data "aws_iam_policy_document" "task_role_httpbin" {
   statement {
-    effect = "Allow"
-    actions = ["firehose:PutRecordBatch"]
+    effect    = "Allow"
+    actions   = ["firehose:PutRecordBatch"]
     resources = ["*"]
   }
 }

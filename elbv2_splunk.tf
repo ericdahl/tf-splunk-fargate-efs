@@ -143,7 +143,7 @@ resource "aws_security_group_rule" "splunk_alb_ingress_8088_vpc" {
 
 data "aws_ec2_managed_prefix_list" "cloudfront_origin_facing" {
   filter {
-    name = "prefix-list-name"
+    name   = "prefix-list-name"
     values = ["com.amazonaws.global.cloudfront.origin-facing"]
   }
 }
