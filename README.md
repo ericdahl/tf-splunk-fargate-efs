@@ -9,6 +9,9 @@ Fargate's 20 GB container limit was a problem for Splunk index data
 This uses a custom docker image which builds on top of the official Splunk image only to pre-set up some
 indexes and HEC keys
 
+It also uses CloudFront as a hack/trick to add HTTPS support without the need for you to have
+a public domain for a cert. Kinesis requires that the HEC endpoint use HTTPS.
+
 ## Quick Start
 
 - `terraform apply`
@@ -22,7 +25,6 @@ indexes and HEC keys
 ## TODO
 - shorter log buffering? fluent-bit config?
 - default capacity provdier rather than launch type.. ?
-- check unhealthy targets
 - iam policy cleanup
 
 
