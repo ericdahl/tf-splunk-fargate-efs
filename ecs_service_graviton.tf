@@ -22,20 +22,20 @@ resource "aws_ecs_task_definition" "graviton" {
 #      image : "arm64v8/busybox",
 #      command:  [ "date" ],
 
-#      logConfiguration : {
-#        logDriver : "awsfirelens",
-#        options : {
-#          Name : "firehose",
-#          region : "us-east-1",
-#          delivery_stream : "splunk"
-#        }
-#      }
+      logConfiguration : {
+        logDriver : "awsfirelens",
+        options : {
+          Name : "firehose",
+          region : "us-east-1",
+          delivery_stream : "splunk"
+        }
+      }
     },
-#    {
-#      name : "firelens",
-#      image: "public.ecr.aws/aws-observability/aws-for-fluent-bit:latest",
-#      user : "0",
-#      essential : true,
+    {
+      name : "firelens",
+      image: "public.ecr.aws/aws-observability/aws-for-fluent-bit:latest",
+      user : "0",
+      essential : true,
 #      logConfiguration : {
 #        logDriver : "awslogs",
 #        options : {
@@ -44,10 +44,10 @@ resource "aws_ecs_task_definition" "graviton" {
 #          awslogs-stream-prefix : "firelens"
 #        }
 #      },
-#      firelensConfiguration : {
-#        "type" : "fluentbit"
-#      }
-#    }
+      firelensConfiguration : {
+        "type" : "fluentbit"
+      }
+    }
   ])
 }
 
