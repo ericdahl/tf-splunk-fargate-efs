@@ -9,17 +9,16 @@ resource "aws_ecs_task_definition" "graviton" {
   cpu          = 256
   memory       = 512
 
-
   runtime_platform {
     cpu_architecture = "ARM64"
   }
 
   container_definitions = jsonencode([
-
     {
       name : "graviton",
 #      image: "gcr.io/kuar-demo/kuard-arm64:blue"
-      image : "arm64v8/busybox",
+#      image : "arm64v8/busybox",
+      image: "public.ecr.aws/docker/library/busybox"
       command:  ["sh", "-c", "while true; do date; sleep 5; done"],
       logConfiguration : {
         logDriver : "awsfirelens",
@@ -49,6 +48,11 @@ resource "aws_ecs_service" "graviton" {
   desired_count    = 1
   enable_execute_command = true
 
+#  capacity_provider_strategy {
+#    capacity_provider = "FARGATE_SPOT"
+#    base = 1
+#    weight = 100
+#  }
 
   network_configuration {
     security_groups = [
