@@ -48,11 +48,6 @@ resource "aws_ecs_service" "graviton" {
   desired_count    = 1
   enable_execute_command = true
 
-#  capacity_provider_strategy {
-#    capacity_provider = "FARGATE_SPOT"
-#    base = 1
-#    weight = 100
-#  }
 
   network_configuration {
     security_groups = [

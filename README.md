@@ -7,6 +7,8 @@ Demo app of Splunk running on AWS ECS Fargate with EFS for storage. It shows:
 - ECS Exec to log in to containers
 - ALB integration
 - Graviton Fargate usage
+- Splunk running in a container
+- Kinesis Firehose -> Splunk integration with HEC
 
 This uses a custom docker image which builds on top of the official Splunk image only to pre-set up some
 indexes and HEC keys
