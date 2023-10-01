@@ -33,15 +33,8 @@ resource "aws_ecs_cluster_capacity_providers" "example" {
   }
 }
 
-data "aws_ssm_parameter" "ecs_optimized" {
-  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
-}
-
-resource "aws_key_pair" "default" {
-  public_key = var.public_key
-}
-
 locals {
+  name = data.aws_default_tags.default.tags["Name"]
   splunk_hec_token_ack = "11111111-1111-1111-1111-111111111111"
 
 
@@ -53,22 +46,6 @@ locals {
   httpbin_alb_endpoint = "${lower(aws_lb_listener.httpbin.protocol)}://${aws_lb.httpbin.dns_name}"
 }
 
-
-# used just for debugging from within the VPC; not necessary
-resource "aws_instance" "jumphost" {
-  subnet_id     = module.vpc.subnet_public1
-  ami           = data.aws_ssm_parameter.ecs_optimized.value
-  instance_type = "t3.medium"
-
-  vpc_security_group_ids = [
-    module.vpc.sg_allow_vpc,
-    module.vpc.sg_allow_22,
-    module.vpc.sg_allow_egress,
-    aws_security_group.splunk.id #  hack to allow it to mount the EFS volume
-  ]
-
-  key_name = aws_key_pair.default.key_name
-}
 
 
 

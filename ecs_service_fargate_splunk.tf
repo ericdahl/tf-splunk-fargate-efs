@@ -141,17 +141,3 @@ resource "aws_cloudwatch_log_group" "splunk" {
 
   retention_in_days = 7
 }
-
-
-
-resource "aws_route53_record" "splunk_alb" {
-  zone_id = var.route53_zone_id
-  name    = "splunk"
-  type    = "CNAME"
-
-  ttl = 15
-
-  records = [
-    aws_lb.splunk_alb.dns_name
-  ]
-}

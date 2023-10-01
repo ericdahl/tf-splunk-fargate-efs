@@ -23,9 +23,11 @@ a public domain for a cert. Kinesis requires that the HEC endpoint use HTTPS.
 
 
 ## TODO
+- remove zone_id ref
+- add graviton
+- SSM Session Manager for instance
+- 
 - shorter log buffering? fluent-bit config?
-- default capacity provdier rather than launch type.. ?
-- iam policy cleanup
 
 
 ### Debugging

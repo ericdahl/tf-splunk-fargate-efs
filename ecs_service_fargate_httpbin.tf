@@ -106,15 +106,3 @@ resource "aws_cloudwatch_log_group" "httpbin" {
   name              = "/ecs/httpbin-fargate-firelens-firehose"
   retention_in_days = 7
 }
-
-resource "aws_route53_record" "httpbin" {
-  zone_id = var.route53_zone_id
-  name    = "httpbin"
-  type    = "CNAME"
-
-  ttl = 15
-
-  records = [
-    aws_lb.httpbin.dns_name
-  ]
-}
