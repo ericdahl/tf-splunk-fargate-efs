@@ -1,10 +1,12 @@
 # tf_splunk_fargate_efs
 
-Demo app of Splunk running on AWS ECS Fargate with EFS for storage
+Demo app of Splunk running on AWS ECS Fargate with EFS for storage. It shows:
 
-Note: Using EFS for this is not generally a good idea for performance. This is
-just a prototype/experiment. Why EFS for a demo? partly to learn and partly because
-Fargate's 20 GB container limit was a problem for Splunk index data
+- Fargate usage on ECS
+- Fargate EFS integration
+- ECS Exec to log in to containers
+- ALB integration
+- Graviton Fargate usage
 
 This uses a custom docker image which builds on top of the official Splunk image only to pre-set up some
 indexes and HEC keys
@@ -23,16 +25,17 @@ a public domain for a cert. Kinesis requires that the HEC endpoint use HTTPS.
 
 
 ## TODO
-- remove zone_id ref
-- add graviton
 - SSM Session Manager for instance
-- 
 - shorter log buffering? fluent-bit config?
 
 
 ### Debugging
 
-#### Nothing in Splunk;
+#### ECS Exec
+
+```
+aws ecs execute-command --cluster tf-splunk-fargate-ecs --command /bin/sh --interactive --container httpbin --task TASK_ID
+```
 
 #### Console Access
 

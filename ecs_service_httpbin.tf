@@ -2,13 +2,12 @@ resource "aws_ecs_task_definition" "httpbin" {
 
   family = "httpbin-fargate"
 
-  execution_role_arn = aws_iam_role.httpbin_execution_role.arn
+  execution_role_arn = aws_iam_role.task_execution_httpbin.arn
+  task_role_arn = aws_iam_role.task_httpbin.arn
 
   network_mode = "awsvpc"
   cpu          = 256
   memory       = 512
-
-  task_role_arn = aws_iam_role.task_httpbin.arn
 
   container_definitions = jsonencode([
 
@@ -74,6 +73,7 @@ resource "aws_ecs_service" "httpbin" {
   cluster          = aws_ecs_cluster.cluster.name
   task_definition  = aws_ecs_task_definition.httpbin.arn
   desired_count    = 3
+  enable_execute_command = true
 
   network_configuration {
     security_groups = [

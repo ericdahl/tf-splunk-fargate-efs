@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "assume_role_ecs_tasks" {
   }
 }
 
-resource "aws_iam_role" "httpbin_execution_role" {
+resource "aws_iam_role" "task_execution_httpbin" {
   name               = "httpbin-execution-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_ecs_tasks.json
 }
@@ -37,5 +37,5 @@ resource "aws_iam_policy" "httpbin_execution_role" {
 
 resource "aws_iam_role_policy_attachment" "httpbin_iam_execution" {
   policy_arn = aws_iam_policy.httpbin_execution_role.arn
-  role       = aws_iam_role.httpbin_execution_role.name
+  role       = aws_iam_role.task_execution_httpbin.name
 }

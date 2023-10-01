@@ -22,3 +22,8 @@ resource "aws_iam_role_policy_attachment" "task_graviton" {
   role       = aws_iam_role.task_graviton.name
   policy_arn = aws_iam_policy.task_graviton.arn
 }
+
+resource "aws_iam_role_policy_attachment" "graviton_task_execution" {
+  role       = aws_iam_role.task_graviton.name
+  policy_arn = aws_iam_policy.ecs_task_exec_command.arn
+}

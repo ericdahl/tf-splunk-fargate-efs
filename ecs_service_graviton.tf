@@ -2,13 +2,13 @@ resource "aws_ecs_task_definition" "graviton" {
 
   family = "graviton-fargate"
 
-  execution_role_arn = aws_iam_role.graviton_execution_role.arn
+  execution_role_arn = aws_iam_role.task_execution_graviton.arn
+  task_role_arn = aws_iam_role.task_graviton.arn
 
   network_mode = "awsvpc"
   cpu          = 256
   memory       = 512
 
-  task_role_arn = aws_iam_role.task_graviton.arn
 
   runtime_platform {
     cpu_architecture = "ARM64"
@@ -47,6 +47,7 @@ resource "aws_ecs_service" "graviton" {
   cluster          = aws_ecs_cluster.cluster.name
   task_definition  = aws_ecs_task_definition.graviton.arn
   desired_count    = 1
+  enable_execute_command = true
 
 
   network_configuration {

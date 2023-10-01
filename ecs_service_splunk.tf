@@ -5,7 +5,8 @@ resource "aws_ecs_task_definition" "splunk" {
   cpu          = 4096
   memory       = 10240
 
-  execution_role_arn = aws_iam_role.splunk_execution_role.arn
+  execution_role_arn = aws_iam_role.task_execution_splunk.arn
+  task_role_arn = aws_iam_role.task_splunk.arn
 
   volume {
     name = "opt-splunk"
@@ -56,7 +57,6 @@ resource "aws_ecs_task_definition" "splunk" {
         }
       }
     }
-
   ])
 }
 
@@ -98,6 +98,7 @@ resource "aws_ecs_service" "splunk" {
   cluster         = aws_ecs_cluster.cluster.name
   task_definition = aws_ecs_task_definition.splunk.arn
   desired_count   = 1
+  enable_execute_command = true
 
   network_configuration {
     security_groups = [

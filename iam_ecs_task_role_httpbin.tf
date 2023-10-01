@@ -23,3 +23,8 @@ resource "aws_iam_role_policy_attachment" "task_httpbin" {
   role       = aws_iam_role.task_httpbin.name
   policy_arn = aws_iam_policy.task_httpbin.arn
 }
+
+resource "aws_iam_role_policy_attachment" "httpbin_task_execution" {
+  role       = aws_iam_role.task_httpbin.name
+  policy_arn = aws_iam_policy.ecs_task_exec_command.arn
+}
