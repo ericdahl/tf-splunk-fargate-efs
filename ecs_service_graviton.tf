@@ -18,10 +18,9 @@ resource "aws_ecs_task_definition" "graviton" {
 
     {
       name : "graviton",
-      image: "gcr.io/kuar-demo/kuard-arm64:blue"
-#      image : "arm64v8/busybox",
-#      command:  [ "date" ],
-
+#      image: "gcr.io/kuar-demo/kuard-arm64:blue"
+      image : "arm64v8/busybox",
+      command:  ["sh", "-c", "while true; do date; sleep 5; done"],
       logConfiguration : {
         logDriver : "awsfirelens",
         options : {
@@ -35,15 +34,6 @@ resource "aws_ecs_task_definition" "graviton" {
       name : "firelens",
       image: "public.ecr.aws/aws-observability/aws-for-fluent-bit:latest",
       user : "0",
-      essential : true,
-#      logConfiguration : {
-#        logDriver : "awslogs",
-#        options : {
-#          awslogs-group : "/ecs/graviton-fargate-firelens-firehose",
-#          awslogs-region : "us-east-1",
-#          awslogs-stream-prefix : "firelens"
-#        }
-#      },
       firelensConfiguration : {
         "type" : "fluentbit"
       }
