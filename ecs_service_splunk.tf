@@ -98,9 +98,6 @@ resource "aws_ecs_service" "splunk" {
   cluster         = aws_ecs_cluster.cluster.name
   task_definition = aws_ecs_task_definition.splunk.arn
   desired_count   = 1
-  launch_type     = "FARGATE"
-
-  platform_version = "1.4.0"
 
   network_configuration {
     security_groups = [

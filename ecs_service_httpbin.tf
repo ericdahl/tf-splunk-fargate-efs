@@ -2,10 +2,6 @@ resource "aws_ecs_task_definition" "httpbin" {
 
   family = "httpbin-fargate"
 
-#  requires_compatibilities = [
-#    "FARGATE",
-#  ]
-
   execution_role_arn = aws_iam_role.httpbin_execution_role.arn
 
   network_mode = "awsvpc"
@@ -76,9 +72,6 @@ resource "aws_ecs_service" "httpbin" {
   cluster          = aws_ecs_cluster.cluster.name
   task_definition  = aws_ecs_task_definition.httpbin.arn
   desired_count    = 3
-  launch_type      = "FARGATE"
-  platform_version = "1.4.0"
-
 
   network_configuration {
     security_groups = [
