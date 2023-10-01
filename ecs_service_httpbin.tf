@@ -64,6 +64,8 @@ resource "aws_ecs_task_definition" "httpbin" {
       }
     }
   ])
+
+
 }
 
 
@@ -91,6 +93,11 @@ resource "aws_ecs_service" "httpbin" {
     target_group_arn = aws_lb_target_group.httpbin.arn
     container_name   = "httpbin"
     container_port   = 8080
+  }
+
+  # bug - https://github.com/hashicorp/terraform-provider-aws/issues/22823
+  lifecycle {
+    ignore_changes = [capacity_provider_strategy]
   }
 }
 

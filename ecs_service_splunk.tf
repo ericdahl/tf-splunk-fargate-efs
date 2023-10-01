@@ -131,6 +131,11 @@ resource "aws_ecs_service" "splunk" {
 
   # Service will fail to be created if the ALB isn't there yet
   depends_on = [aws_lb.splunk_alb]
+
+  # bug - https://github.com/hashicorp/terraform-provider-aws/issues/22823
+  lifecycle {
+    ignore_changes = [capacity_provider_strategy]
+  }
 }
 
 resource "aws_cloudwatch_log_group" "splunk" {

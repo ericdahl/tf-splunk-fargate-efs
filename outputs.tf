@@ -3,7 +3,7 @@ output "efs" {
 }
 
 output "jumphost" {
-  value = aws_instance.jumphost.public_ip
+  value = aws_instance.jumphost.id
 }
 
 output "splunk" {
