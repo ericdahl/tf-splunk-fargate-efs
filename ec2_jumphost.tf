@@ -53,3 +53,8 @@ resource "aws_iam_instance_profile" "ec2" {
   name = "${aws_iam_role.jumphost.name}-instance-profile"
   role = aws_iam_role.jumphost.name
 }
+
+resource "aws_iam_role_policy_attachment" "ec2_ecs" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+  role       = aws_iam_role.jumphost.name
+}

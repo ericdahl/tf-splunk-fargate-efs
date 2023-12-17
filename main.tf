@@ -33,6 +33,33 @@ resource "aws_ecs_cluster_capacity_providers" "example" {
   }
 }
 
+#  just single instance for prototype; don't even care about ASG
+resource "aws_instance" "ecs" {
+  subnet_id     = module.vpc.subnet_public1
+  ami           = data.aws_ssm_parameter.ecs_optimized.value
+  instance_type = "t3.medium"
+
+  vpc_security_group_ids = [
+    module.vpc.sg_allow_vpc,
+    module.vpc.sg_allow_22,
+    module.vpc.sg_allow_egress,
+    aws_security_group.splunk.id #  hack to allow it to mount the EFS volume
+  ]
+
+  key_name = aws_key_pair.default.key_name
+
+  iam_instance_profile = aws_iam_instance_profile.ec2.name
+
+  user_data = <<EOF
+#!/bin/bash
+echo "ECS_CLUSTER=${aws_ecs_cluster.cluster.name}" >> /etc/ecs/ecs.config
+EOF
+
+  tags = {
+    Name = "ecs"
+  }
+}
+
 locals {
   name = data.aws_default_tags.default.tags["Name"]
   splunk_hec_token_ack = "11111111-1111-1111-1111-111111111111"

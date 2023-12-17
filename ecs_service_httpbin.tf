@@ -72,7 +72,7 @@ resource "aws_ecs_service" "httpbin" {
   name             = "httpbin"
   cluster          = aws_ecs_cluster.cluster.name
   task_definition  = aws_ecs_task_definition.httpbin.arn
-  desired_count    = 3
+  desired_count    = 1
   enable_execute_command = true
 
   network_configuration {
@@ -94,6 +94,10 @@ resource "aws_ecs_service" "httpbin" {
     container_name   = "httpbin"
     container_port   = 8080
   }
+  launch_type = "EC2"
+#  capacity_provider_strategy {
+#    capacity_provider = ""
+#  }
 
   # bug - https://github.com/hashicorp/terraform-provider-aws/issues/22823
   lifecycle {
