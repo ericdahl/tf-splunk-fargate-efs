@@ -32,11 +32,15 @@ a public domain for a cert. Kinesis requires that the HEC endpoint use HTTPS.
 - `docker run --rm -it --net host fluentd`
 - exec into container and tail logs
 
+- TODO
+    - try custom config file.. requires custom docker image?
 
 ### Notes
 
 - ecs-agent uses `go-config-generator-for-fluentd-and-fluentbit` to  generate config and puts it in
   `/var/lib/ecs/data/firelens/{Task ID}/config` which is mounted to the fluent-bit container
+- https://github.com/aws/amazon-ecs-agent/blob/b6866da0ebc66b0024f88db043ac3cfb6cb2d901/agent/taskresource/firelens/firelensconfig_unix.go#L190
+
 
 Default config
 ```
