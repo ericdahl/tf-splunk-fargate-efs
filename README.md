@@ -26,6 +26,12 @@ a public domain for a cert. Kinesis requires that the HEC endpoint use HTTPS.
 - Query Splunk: `index=ecs`
 
 
+## Firelens Forward config
+
+- SSH to jumphost
+- `docker run --rm -it --net host fluentd`
+- exec into container and tail logs
+
 ## TODO
 - SSM Session Manager for instance
 - shorter log buffering? fluent-bit config?

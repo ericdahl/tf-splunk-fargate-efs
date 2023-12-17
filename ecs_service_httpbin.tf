@@ -25,9 +25,9 @@ resource "aws_ecs_task_definition" "httpbin" {
       logConfiguration : {
         logDriver : "awsfirelens",
         options : {
-          Name : "firehose",
-          region : "us-east-1",
-          delivery_stream : "splunk"
+          Name : "forward",
+          Host: "10.0.1.13"
+          Port: "24224"
         }
       }
     },
